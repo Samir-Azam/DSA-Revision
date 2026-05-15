@@ -97,3 +97,59 @@ public:
     }
 };
 
+/* 
+optimal ways to check if it is being attacked or not for that we will create three vectors 
+1. upwards (to check for is it column safe or not) 
+2. up_right (to check for diagonally upwards right direction) - use(row+col) and its size should be 2*n-1
+3. up_left (to check for diagonally upwards left direction) - use((n-1) - (row-col)) and its size should be 2*n-1
+
+*/
+// T.C - N! (Optimal code below)
+
+
+class SolutionOptimal {
+public:
+
+    void solve(int row, int n, vector<string>&board, vector<vector<string>>&ans, vector<int> &upwards,vector<int>&up_right, vector<int>&up_left){
+
+        if (row==n){
+            ans.push_back(board);
+            return;
+        }
+
+        for (int col=0;col<n;col++){
+            if (upwards[col]==0 && up_right[row+col]==0 && up_left[(n-1)-(row-col)]==0){
+                board[row][col] = 'Q';
+                upwards[col] = 1;
+                up_right[row+col] = 1;
+                up_left[(n-1)-(row-col)] = 1;
+                solve(row+1, n, board, ans, upwards, up_right, up_left);
+                board[row][col] = '.';
+                upwards[col] = 0;
+                up_right[row+col] = 0;
+                up_left[(n-1)-(row-col)] = 0;
+            }
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<string>board;
+        string s(n, '.');
+
+        // creating the board
+        for (int i=0;i<n;i++){
+            board.push_back(s);
+        }
+
+        vector<vector<string>>ans;
+
+        vector<int> upwards(n, 0);
+        vector<int>up_right(2*n-1, 0);
+        vector<int>up_left(2*n-1, 0);
+
+        solve(0, n, board, ans, upwards, up_right, up_left);
+        return ans;
+
+    }
+};
+
+
